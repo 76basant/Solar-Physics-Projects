@@ -1,6 +1,6 @@
 #Full Code:
 # The objective of this code to plot the direction of IMF 
-# from 1976 to 2018 year and separate them into Toward and Away
+# from 1976 to 2018 year and separate them into Toward and  Away
 
 
 
@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 # read data as table data and using all columns
 
-filepath=r"E:\Project 1\IMF.dat"
+filepath=r"E:Projecct 1\IMF.dat"
 df1= pd.read_table(filepath, sep="\s+",  usecols=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]  )
 
 #printing data
@@ -273,27 +273,30 @@ font = {'family': 'serif',
 
 from scipy.interpolate import interp1d
 
-
+starting_year=1967
+ending_year=2018
+# Filter the DataFrame for rows where the first column (Year) is between 1976 and 2018
+df = df[(df.iloc[:, 0] >= starting_year) & (df.iloc[:, 0] <= ending_year)]
 
 
 cubic_interploation_model = interp1d(df['Year'], df['count_W'], kind = "cubic")
 
-X1_=np.linspace(1964, 2018, 500)
-Y2_=cubic_interploation_model(X1_)
+X1_=np.linspace(starting_year, ending_year, 500)
+Y1_=cubic_interploation_model(X1_)
 
 plt.scatter(df['Year'], df['count_W'],label='N days',marker='o',color='red')
-plt.plot(X1_, Y2_,color='red',linestyle=':')
+plt.plot(X1_, Y1_,color='red',linestyle=':')
 
 
 cubic_interploation_model = interp1d(df['Year'], df['count_Y'], kind = "cubic")
-X2_=np.linspace(1964, 2018, 500)
+X2_=np.linspace(starting_year, ending_year, 500)
 Y2_=cubic_interploation_model(X2_)
 
 plt.scatter(df['Year'], df['count_Y'],label='M days',marker='o',color='blue')
 plt.plot(X2_, Y2_,color='blue',linestyle=':')
 plt.legend()
 
-plt.xlim(1967,2018)
+#plt.xlim(1967,2018)
 plt.ylim(0,155)
 plt.xlabel("Year",font)
 plt.ylabel("IMF direction",font)
@@ -304,22 +307,21 @@ plt.show()
 
 cubic_interploation_model = interp1d(df['Year'], df['count_B'], kind = "cubic")
 
-X1_=np.linspace(1964, 2018, 500)
-Y2_=cubic_interploation_model(X1_)
+X1_=np.linspace(starting_year, ending_year, 500)
+Y1_=cubic_interploation_model(X1_)
 
 plt.scatter(df['Year'], df['count_B'],label='A days',marker='o',color='red')
-plt.plot(X1_, Y2_,color='red',linestyle=':')
+plt.plot(X1_, Y1_,color='red',linestyle=':')
 
 
 cubic_interploation_model = interp1d(df['Year'], df['count_R'], kind = "cubic")
-X2_=np.linspace(1964, 2018, 500)
+X2_=np.linspace(starting_year, ending_year, 500)
 Y2_=cubic_interploation_model(X2_)
 
 plt.scatter(df['Year'], df['count_R'],label='T days',marker='o',color='blue')
 plt.plot(X2_, Y2_,color='blue',linestyle=':')
 plt.legend()
 
-plt.xlim(1967,2018)
 plt.ylim(60,220)
 plt.xlabel("Year",font)
 plt.ylabel("IMF direction",font)
