@@ -86,15 +86,21 @@ plt.xlim([min(monthly_data['time']-x_step/5.0),max(monthly_data['time'])+x_step/
 plt.xlabel('Time')
 plt.ylabel('SSA ($\mu Hemi$)')
 plt.title('SSA Monthly Average Cycles 21-24')
-plt.show()
+#plt.show()
 
 ############################################
 # Optionally, save the DataFrame to a Excel file
 
 # Step 3: Save the selected columns to a new Excel file (optional)
 monthly_data.to_excel('file1.xlsx', index=False)
+#####################3
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+from scipy.signal import find_peaks
+from astropy.timeseries import LombScargle
 
-########################################
 # Function to load and preprocess data
 def load_data(file_path, date_columns, value_column, start_date):
     df = pd.read_excel(file_path, engine='openpyxl')
@@ -147,53 +153,108 @@ def lomb_scargle_analysis(time, signal, num_freqs=500, confidence_levels=(95, 99
         'peak_periods': peak_periods,
         'confidence_thresholds': conf_thresholds,
     }
-
-# Function to plot Lomb-Scargle periodogram with only peaks
-def plot_lomb_scargle(results, title="Lomb-Scargle Periodogram", xlabel="Frequency (1/month)", ylabel="Power"):
-    plt.figure(figsize=(10, 6))
-
+# Function to plot Lomb-Scargle periodogram with only peaks within the desired xlim
+def plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram", xlabel="Frequency (1/month)", ylabel="Power", xlim=(0.007, 0.2)):
     # Interpolation for smoother plot
     cubic_interpolation_model = interp1d(results['frequency'], results['power'], kind="cubic")
     interpolated_freq = np.linspace(results['frequency'][0], results['frequency'][-1], 500)
     interpolated_power = cubic_interpolation_model(interpolated_freq)
 
-    
     # Plot interpolated power spectrum
-    plt.plot(interpolated_freq, interpolated_power, color='blue', label='Smoothed Power')
+    ax.plot(interpolated_freq, interpolated_power, color='blue', label='Smoothed Power')
 
-    # Confidence thresholds
-    for level, threshold in results['confidence_thresholds'].items():
-        plt.axhline(y=threshold, linestyle='--', label=f'{level}% Confidence')
+    # Confidence thresholds (95% red, 99% black)
+    ax.axhline(y=results['confidence_thresholds'][95], color='red', linestyle='--', label='95% Confidence')
+    ax.axhline(y=results['confidence_thresholds'][99], color='black', linestyle='--', label='99% Confidence')
+
+    # Filter peaks that are within the xlim range (0.007, 0.2)
+    valid_peaks = [(freq, period) for freq, period in zip(results['peak_frequencies'], results['peak_periods']) if 0.007 <= freq <= 0.2]
 
     # Highlight peaks with vertical lines
-    for freq, period in zip(results['peak_frequencies'], results['peak_periods']):
-        plt.axvline(x=freq, color='green', linestyle=':', linewidth=1)
-        plt.text(freq, max(results['power']) * 0.9, f'{period / 12.0:.2f} yr', color='red',
-                 horizontalalignment='right', verticalalignment='center', fontsize=10, rotation=90)
+    for freq, period in valid_peaks:
+        ax.axvline(x=freq, color='green', linestyle=':', linewidth=1)
+        ax.text(freq, max(results['power']) * 0.9, f'{period / 12.0:.2f} yr', color='red',
+                horizontalalignment='right', verticalalignment='center', fontsize=10, rotation=90)
 
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.title(title)
-    plt.legend(loc='upper right')
-    plt.ylim([0, max(results['power']) + 0.02])
-    plt.xlim([0,0.2])
-    plt.tight_layout()
-    plt.show()
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.legend(loc='upper right')
+    ax.set_ylim([0, max(results['power']) + 0.02])
+    ax.set_xlim(xlim)  # Set the xlim to the desired range
+
 
 # Main execution
 if __name__ == "__main__":
     file_path = r'E:\file1.xlsx'
     date_columns = ['Year', 'Month']
     value_column = 'SSA'  # Change this to the desired column
-    start_date = '1976-03-01'
 
-    # Load and preprocess data
+    # Create subplots for two separate figures, adjusting the size for cycles 21 and 22
+    fig1, axes1 = plt.subplots(1, 2, figsize=(16, 8))  # Larger size for Figure 1 (cycles 21 and 22)
+    fig2, axes2 = plt.subplots(1, 2, figsize=(14, 6))  # Figure 2 with standard size for cycles 23 and 24
+
+    # Define the start dates for each cycle and corresponding row/column in the subplot grid
+    start_dates = ['1976-03-01', '1986-09-01', '1996-08-01', '2008-12-01']
+    cycle_ranges = [(0, 128), (128, 247), (247, 395), (395, None)]  # Define data ranges for each cycle
+
+    # For Figure 1 (cycles 21 and 22)
+    for i, (start_date, (start_idx, end_idx)) in enumerate(zip([start_dates[0], start_dates[1]], [cycle_ranges[0], cycle_ranges[1]])):
+        # Load and preprocess data for each cycle
+        df = load_data(file_path, date_columns, value_column, start_date)
+        df = df.iloc[start_idx:end_idx, :]  # Slice data for the current cycle
+        
+        # Perform Lomb-Scargle analysis with dynamic frequency range
+        results = lomb_scargle_analysis(df['Time'].values, df['Signal'].values)
+
+        # Plot results in corresponding subplot for Figure 1
+        plot_lomb_scargle(results, axes1[i], title=f"Lomb-Scargle Periodogram - Cycle {21 + i}")
+
+    # For Figure 2 (cycles 23 and 24)
+    for i, (start_date, (start_idx, end_idx)) in enumerate(zip([start_dates[2], start_dates[3]], [cycle_ranges[2], cycle_ranges[3]])):
+        # Load and preprocess data for each cycle
+        df = load_data(file_path, date_columns, value_column, start_date)
+        df = df.iloc[start_idx:end_idx, :]  # Slice data for the current cycle
+        
+        # Perform Lomb-Scargle analysis with dynamic frequency range
+        results = lomb_scargle_analysis(df['Time'].values, df['Signal'].values)
+
+        # Plot results in corresponding subplot for Figure 2
+        plot_lomb_scargle(results, axes2[i], title=f"Lomb-Scargle Periodogram - Cycle {23 + i}")
+
+    # Display the figures with tight layout
+    fig1.tight_layout()
+    fig2.tight_layout()
+    
+    # Show the figures
+    #plt.show()
+
+#####################
+# Main execution for Cycle 21 only
+if __name__ == "__main__":
+    file_path = r'E:\file1.xlsx'
+    date_columns = ['Year', 'Month']
+    value_column = 'SSA'  # Change this to the desired column
+
+    # Create a subplot for cycle 21
+    fig, ax = plt.subplots(figsize=(8, 6))  # Adjust the size as needed
+
+    # Define the start date and data range for cycle 21
+    start_date = '1996-08-01'
+    cycle_range = (247, 395)  # Adjust this as needed to match cycle 21's range in your dataset
+
+    # Load and preprocess data for cycle 21
     df = load_data(file_path, date_columns, value_column, start_date)
-    print("Monthly Average SSA from cycles 21 to 24")
-    print(df)
+    df = df.iloc[cycle_range[0]:cycle_range[1], :]  # Slice data for cycle 21
 
     # Perform Lomb-Scargle analysis with dynamic frequency range
     results = lomb_scargle_analysis(df['Time'].values, df['Signal'].values)
 
-    # Plot results
-    plot_lomb_scargle(results, title="Lomb-Scargle Periodogram of Signal")
+    # Plot results for cycle 21
+    plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram - Cycle 21")
+
+    # Display the figure
+    plt.tight_layout()
+    plt.show()
+
+###############################
