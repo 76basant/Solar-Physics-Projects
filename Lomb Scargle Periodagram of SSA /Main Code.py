@@ -20,7 +20,7 @@ file_path = r'D:\Time Seies Analysis\b10.dat'
 
 
 # Loading data as .dat file from this link:
-#https://omniweb.gsfc.nasa.gov/html/polarity/polarity_tab.html
+#https://solarscience.msfc.nasa.gov/greenwch/sunspot_area.txt
 # read data as table data and using all columns
 df1= pd.read_table(file_path, sep="\s+",  usecols=[0,1,2]  )
 #printing data
@@ -29,11 +29,9 @@ print (df1)
 #select data from cycles from 21 to 24
 df1=df1.loc[1222:1747,:]
 
-#if you want to rename the columns, you should use that:
+# rename the columns, you should use that:
 df1.columns= ['Year', 'Month','SSA']
 print(df1)
-
-
 
 # Calculate monthly averages (if needed)
 # For this example, it's assumed the data is already monthly
@@ -45,18 +43,15 @@ nan_rows = monthly_data[monthly_data.isnull().any(axis=1)]
 # Display the rows with NaN values
 print("Rows with NaN values:")
 print(nan_rows)
-
-#monthly_data=monthly_data.iloc[8:]
 print(monthly_data)
 
 monthly_data['time'] = monthly_data['Year'] + monthly_data['Month'] / 12
-
 print(monthly_data)
 
-#plotting Raw Data
+#########################################################
+#plotting Raw Data of SSA from Cycles 21 to 24 
 plt.scatter(monthly_data['time'],monthly_data['SSA'], color='blue', s=3)
 #plt.plot( monthly_data['time'],monthly_data['SSA'], color='red')
-
 
 # Retrieve current y-ticks
 yticks = plt.gca().get_yticks()
@@ -86,20 +81,16 @@ plt.xlim([min(monthly_data['time']-x_step/5.0),max(monthly_data['time'])+x_step/
 plt.xlabel('Time')
 plt.ylabel('SSA ($\mu Hemi$)')
 plt.title('SSA Monthly Average Cycles 21-24')
-#plt.show()
+plt.show()
 
 ############################################
-# Optionally, save the DataFrame to a Excel file
+# save the DataFrame to a Excel file
 
 # Step 3: Save the selected columns to a new Excel file (optional)
 monthly_data.to_excel('file1.xlsx', index=False)
-#####################3
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
-from scipy.signal import find_peaks
-from astropy.timeseries import LombScargle
+
+#####################
+#Object oriented program to plot Lomb Scargle periodogram
 
 # Function to load and preprocess data
 def load_data(file_path, date_columns, value_column, start_date):
@@ -153,8 +144,9 @@ def lomb_scargle_analysis(time, signal, num_freqs=500, confidence_levels=(95, 99
         'peak_periods': peak_periods,
         'confidence_thresholds': conf_thresholds,
     }
+
 # Function to plot Lomb-Scargle periodogram with only peaks within the desired xlim
-def plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram", xlabel="Frequency (1/month)", ylabel="Power", xlim=(0.007, 0.2)):
+def plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram", xlabel="Frequency (1/month)", ylabel="Power", xlim=(0, 0.2)):
     # Interpolation for smoother plot
     cubic_interpolation_model = interp1d(results['frequency'], results['power'], kind="cubic")
     interpolated_freq = np.linspace(results['frequency'][0], results['frequency'][-1], 500)
@@ -169,11 +161,19 @@ def plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram", xlabel="Fre
 
     # Filter peaks that are within the xlim range (0.007, 0.2)
     valid_peaks = [(freq, period) for freq, period in zip(results['peak_frequencies'], results['peak_periods']) if 0.007 <= freq <= 0.2]
+    
+    # Get y-axis ticks  
+    y_ticks = plt.gca().get_yticks()
+    print("Y-axis ticks:", y_ticks)
+
+    # Calculate step size (assuming at least two ticks)
+    y_step_size = y_ticks[1] - y_ticks[0]
+    print("Step size of y-axis:", y_step_size)
 
     # Highlight peaks with vertical lines
     for freq, period in valid_peaks:
         ax.axvline(x=freq, color='green', linestyle=':', linewidth=1)
-        ax.text(freq, max(results['power']) * 0.9, f'{period / 12.0:.2f} yr', color='red',
+        ax.text(freq, max(results['power'])-y_step_size , f'{period / 12.0:.2f} yr', color='red',
                 horizontalalignment='right', verticalalignment='center', fontsize=10, rotation=90)
 
     ax.set_xlabel(xlabel)
@@ -183,8 +183,11 @@ def plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram", xlabel="Fre
     ax.set_ylim([0, max(results['power']) + 0.02])
     ax.set_xlim(xlim)  # Set the xlim to the desired range
 
+#######################################################
+# Main execution to plot
+# cycle 21 and cycle 22 in first figure
+# cycle 23 and cycle 24 in second figure
 
-# Main execution
 if __name__ == "__main__":
     file_path = r'E:\file1.xlsx'
     date_columns = ['Year', 'Month']
@@ -196,7 +199,7 @@ if __name__ == "__main__":
 
     # Define the start dates for each cycle and corresponding row/column in the subplot grid
     start_dates = ['1976-03-01', '1986-09-01', '1996-08-01', '2008-12-01']
-    cycle_ranges = [(0, 128), (128, 247), (247, 395), (395, None)]  # Define data ranges for each cycle
+    cycle_ranges = [(0, 127), (126, 246), (245, 394), (393, None)]  # Define data ranges for each cycle
 
     # For Figure 1 (cycles 21 and 22)
     for i, (start_date, (start_idx, end_idx)) in enumerate(zip([start_dates[0], start_dates[1]], [cycle_ranges[0], cycle_ranges[1]])):
@@ -227,10 +230,10 @@ if __name__ == "__main__":
     fig2.tight_layout()
     
     # Show the figures
-    #plt.show()
+    plt.show()
 
 #####################
-# Main execution for Cycle 21 only
+# Main execution for specific Cycle 
 if __name__ == "__main__":
     file_path = r'E:\file1.xlsx'
     date_columns = ['Year', 'Month']
@@ -240,8 +243,23 @@ if __name__ == "__main__":
     fig, ax = plt.subplots(figsize=(8, 6))  # Adjust the size as needed
 
     # Define the start date and data range for cycle 21
-    start_date = '1996-08-01'
-    cycle_range = (247, 395)  # Adjust this as needed to match cycle 21's range in your dataset
+    #Cycle_Number='21'
+    #start_date = '1976-03-01'
+    #cycle_range = (0, 127)  # Adjust this as needed to match cycle 21's range in your dataset
+    
+    # Define the start date and data range for cycle 22
+    Cycle_Number='22'
+    start_date = '1986-09-01'
+    cycle_range = (126, 246)  # Adjust this as needed to match cycle 22's range in your dataset
+    
+    # Define the start date and data range for cycle 23
+    #start_date = '1996-08-01'
+    #cycle_range = (245, 394)  # Adjust this as needed to match cycle 23's range in your dataset
+    
+    # Define the start date and data range for cycle 24
+    #start_date = '2008-12-01'
+    #cycle_range = (393,None)  # Adjust this as needed to match cycle 24's range in your dataset
+    
 
     # Load and preprocess data for cycle 21
     df = load_data(file_path, date_columns, value_column, start_date)
@@ -251,7 +269,7 @@ if __name__ == "__main__":
     results = lomb_scargle_analysis(df['Time'].values, df['Signal'].values)
 
     # Plot results for cycle 21
-    plot_lomb_scargle(results, ax, title="Lomb-Scargle Periodogram - Cycle 21")
+    plot_lomb_scargle(results, ax, title=f'Lomb-Scargle Periodogram - Cycle {Cycle_Number}')
 
     # Display the figure
     plt.tight_layout()
