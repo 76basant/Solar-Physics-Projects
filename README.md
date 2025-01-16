@@ -1,20 +1,23 @@
 # Solar-Physics-Projects💡  
 Here are some of my key projects that showcase my skills and expertise:
 
-1. **[Solar Wind Parameters Based on the Toward and Away Direction of IMF Through five solar cycles ](https://github.com/76basant/Solar-Physics-Projects/tree/3e425df82efdad6bffaefede083d43ef5a769154/Toward%20and%20Away%20Direction%20of%20IMF)**:
-- Objective: Splitting Solar Wind Parameters based on the polarity of IMF Direction into Toward and Away  and searching for the periodicities using Wavelet Analysis
-   - Programming Languages used: Python & Matlab
-   - Main Code: Data analysis approach and Explanation of the method
+1. **[The impact of polarity interplanatery magnetic filed IMF on solar wind and geomagnetic indices through five solar cycles 20-24](https://github.com/76basant/Solar-Physics-Projects/tree/3e425df82efdad6bffaefede083d43ef5a769154/Toward%20and%20Away%20Direction%20of%20IMF)**:
+- Description: studied the response of solar wind parameters, like speed, pressure, density and geomagnetic indices, such as Dst and Ap to the polarity of IMF during the last five solar cycles, 20-24.
+   - Programming Languages:
+ Python & Matlab
+   - Analysis techniques: 
+Running correlation & Wavelet & cross-wavelet & wavelet-coherence 
    - Presentation: Results and findings
-2. **[Lomb Scargle Periodagram of Sunspot Area (Python & Matlab)](https://github.com/76basant/Solar-Physics-Projects/tree/main/Lomb%20Scargle%20Periodagram%20of%20SSA%20)**:
+2. **[The interconnection between geomagnetic indices based on asymmetry of the solar activity" investigated the impact of unequal distribution of solar activity on geomagnetic disturbances during the last four solar cycles, 21-24](https://github.com/76basant/Solar-Physics-Projects/tree/main/Lomb%20Scargle%20Periodagram%20of%20SSA%20)**:
 - Objective: Detection Periodicities using the Scargle Periodagram of Sunspot Area from cycles 21 to 24. 
-   - Source of Data: Download Data
-   - Main Code: Data analysis approach and Explanation of the method
-   - Presentation: Results and findings
+- Description: investigation the impact of unequal distribution of solar activity on geomagnetic disturbances during the last four solar cycles, 21-24.   
+   - Programming Languages:
+ Python & Matlab
+   - Analysis Techniques: Lomb-Scargle periodogram
 
-3. **[Long short-term memory (LSTM) Neural Network of SSA](https://github.com/76basant/Solar-Physics-Projects/tree/3e425df82efdad6bffaefede083d43ef5a769154/Toward%20and%20Away%20Direction%20of%20IMF](https://github.com/76basant/Solar-Physics-Projects/tree/main/LSTM%20of%20SSAs))**:
-- Objective: Analysis Data of the Sunspot Area from cycles 12 to 20 and predict cycles from 21 to 24. 
-   - Source of Data: Download Data
-   - Main Code: Data analysis approach and Explanation of the method
-   - Presentation: Results and findings
-
+3. **[Long-short term Nueral Network prediction of solar activity during solar cycles 20-24 ](https://github.com/76basant/Solar-Physics-Projects/tree/3e425df82efdad6bffaefede083d43ef5a769154/Toward%20and%20Away%20Direction%20of%20IMF](https://github.com/76basant/Solar-Physics-Projects/tree/main/LSTM%20of%20SSAs))**:
+- Description: exploration the potential of LSTM model to forecast solar activity trend in solar cycles, 21-24, using historical data witihin solar cycles 12-20
+ 
+  - Programming Languages:
+ Python 
+   - Analysis Techniques: LSTM Nueral Network model
