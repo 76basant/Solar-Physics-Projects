@@ -15,7 +15,7 @@ Running correlation & Wavelet & cross-wavelet & wavelet-coherence
  Python & Matlab
    - Analysis Techniques: Lomb-Scargle periodogram
 
-3. **[Long-short term Nueral Network prediction of solar activity during solar cycles 20-24 ] ( https://github.com/76basant/Solar-Physics-Projects/tree/main/LSTM%20of%20SSAs )**:
+3. **[Long-short term Nueral Network prediction of solar activity during solar cycles 20-24 ] (https://github.com/76basant/Solar-Physics-Projects/tree/main/LSTM%20of%20SSAs)**:
 - Description: exploration the potential of LSTM model to forecast solar activity trend in solar cycles, 21-24, using historical data witihin solar cycles 12-20
  
   - Programming Languages:
