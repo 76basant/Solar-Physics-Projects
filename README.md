@@ -1,6 +1,6 @@
 # Solar Physics Projects 💡  
 
-Welcome to my Solar Physics Projects repository! This repository showcases my research and expertise in analyzing solar and geomagnetic activity using advanced programming and analysis techniques.
+ My Solar Physics Projects repository! This repository showcases my research and expertise in analyzing solar and geomagnetic activity using advanced programming and analysis techniques.
 
 ## Key Projects  
 
@@ -14,8 +14,8 @@ Welcome to my Solar Physics Projects repository! This repository showcases my re
 
 ---
 
-### 2. [The Interconnection Between Geomagnetic Indices Based on Asymmetry of Solar Activity]
-(https://github.com/76basant/Solar-Physics-Projects/tree/main/Lomb%20Scargle%20Periodagram%20of%20SSA%20)- **Description**:  
+### 2. [The Interconnection Between Geomagnetic Indices Based on Asymmetry of Solar Activity](https://github.com/76basant/Solar-Physics-Projects/tree/main/Lomb%20Scargle%20Periodagram%20of%20SSA%20)
+- **Description**:  
   Investigated the impact of unequal solar activity distribution on geomagnetic disturbances over the last four solar cycles (21-24).  
 - **Programming Languages**:  
   Python, MATLAB  
@@ -33,9 +33,3 @@ Welcome to my Solar Physics Projects repository! This repository showcases my re
   LSTM Neural Network Model  
 
 ---
-
-## Contact  
-
-For any inquiries or collaborations, feel free to reach out:  
-📧 **Email**: basantmagdy0346@gmail.com  
-🌐 **GitHub**: [Basant's GitHub](https://github.com/76basant)
